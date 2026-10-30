@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ScrapingBee Hero</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Geist+Mono:wght@400;700&family=Flow+Circular&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bee-yellow: #ffc91f;
+    --ink: #0f0f0e;
+    --ink-65: rgba(15, 15, 14, 0.65);
+    --orange: #ff9d28;
+    --teal: #1cd2b4;
+    --red: #fc2542;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fff; }
+  body { font-family: "Figtree", system-ui, sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- Hero shell ---------- */
+  .hero { position: relative; background: var(--bee-yellow); min-height: 904px; overflow: hidden; }
+  .hero__diagonal { position: absolute; left: 0; bottom: 0; width: 100%; height: 214px; display: block; }
+  .hero__inner { position: relative; max-width: 1440px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 56px; padding-bottom: 60px; }
+
+  /* ---------- Header (mirrors scrapingbee.com: .container, .navbar, .hasdrop, .nav-drop, .btn-black-o) ---------- */
+  .site-header { position: relative; z-index: 40; width: 100%; padding: 16px 0; }
+  .site-header__inner { position: relative; max-width: 1300px; margin: 0 auto; display: flex; align-items: center; }
+  .site-header__logo { flex: 1; }
+  .site-header__logo img { display: block; width: 160px; height: 26px; }
+  .navbar { display: contents; font-size: 16px; line-height: 1.2; }
+  .navbar ul { list-style: none; margin: 0; padding: 0; }
+  .navbar__menu { position: relative; display: flex; align-items: center; gap: 24px; }
+  .navbar__menu > li { position: relative; }
+  .navbar__menu > li.nav-item--mega { position: static; }
+  .navbar__link:hover { text-decoration: underline; }
+  .navbar__actions { flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 20px; }
+  .hasdrop { margin: -14px -21px; }
+  .hasdrop-a { position: relative; display: flex; align-items: center; padding: 14px 21px; transition: color .15s cubic-bezier(.4,0,.2,1); }
+  .hasdrop:hover .hasdrop-a { color: rgba(0,0,0,.47); }
+  .nav-caret { display: inline-block; margin-left: 6px; width: 18px; height: 18px; transition: transform .2s ease; }
+  .hasdrop:hover > .hasdrop-a .nav-caret { transform: rotate(180deg); }
+
+  .nav-drop { position: absolute; top: 100%; left: 15px; margin-top: 12px; min-width: 240px; padding: 8px; border-radius: 14px; background: #fff;
+              border: 1px solid #e4e7ec; box-shadow: 0 12px 32px rgba(15,15,14,.1), 0 2px 6px rgba(15,15,14,.04);
+              visibility: hidden; opacity: 0; transition: all .15s cubic-bezier(.4,0,.2,1); }
+  .nav-drop::after { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
+  .hasdrop:hover .nav-drop, .hasdrop:focus-within .nav-drop { visibility: visible; opacity: 1; }
+  .nav-drop--mega { display: flex; width: 960px; max-width: calc(100vw - 32px); padding: 0; left: -230px; }
+  .nav-drop--mega > .nav-drop__col { display: flex; flex: 1; min-width: 0; flex-direction: column; padding: 16px 12px; }
+  .nav-drop--mega > .nav-drop__col + .nav-drop__col { border-left: 1px solid #e4e7ec; }
+  .nav-drop__heading { display: block; margin-bottom: 8px; padding: 8px 10px 0; font-size: 15px; font-weight: 500; color: var(--ink); }
+  .nav-drop__core { display: inline-flex; align-items: center; margin-left: 8px; padding: 2px 8px; border-radius: 999px; background: #ffc91f; color: var(--ink);
+              font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; vertical-align: 1px; }
+  .nav-drop__link { display: flex; align-items: center; gap: 11px; padding: 7px 10px; border-radius: 8px; color: var(--ink);
+              transition: background-color .15s cubic-bezier(.4,0,.2,1); }
+  .nav-drop__link:hover { background: #f7f7f8; }
+  .nav-drop__link .nav-drop__icon { flex-shrink: 0; width: 32px; height: 32px; padding: 6px; background: #f2f2f2; border: 1px solid #e4e7ec; border-radius: 9px;
+              color: #344054; transition: box-shadow .12s ease, transform .12s ease, background-color .15s, border-color .15s; }
+  .nav-drop__link:hover .nav-drop__icon { background: #fff; border-color: var(--ink); box-shadow: 3px 3px var(--ink); transform: translate(-1px, -1px); }
+  .nav-drop--mega > .nav-drop__col:first-child .nav-drop__link .nav-drop__icon { background: #ffc91f; border-color: #e8b70a; color: var(--ink); }
+  .nav-drop--mega > .nav-drop__col:first-child .nav-drop__link:hover .nav-drop__icon { background: #fff; border-color: var(--ink); }
+  .nav-drop__icon--cursor, .nav-drop__icon--openai, .nav-drop__icon--mcp { color: var(--ink) !important; }
+  .nav-drop__icon--n8n { color: #ea4b71 !important; }
+  .nav-drop__icon--make { color: #6d00cc !important; }
+  .nav-drop__icon--amazon { color: #f90 !important; }
+  .nav-drop__txt { display: flex; flex-direction: column; min-width: 0; }
+  .nav-drop__desc { margin-top: 2px; font-size: 12.5px; font-weight: 400; line-height: 1.35; color: #98a2b3; }
+  .nav-drop__viewall { display: flex; align-items: center; gap: 6px; margin-top: 4px; padding: 7px 10px; font-weight: 600; color: var(--ink); }
+  .nav-drop__viewall:hover { text-decoration: underline; }
+  .nav-drop__viewall .nav-drop__icon { width: 14px; height: 14px; }
+  .btn-black-o { display: inline-flex; align-items: center; justify-content: center; height: 48px; padding: 0 21px; border: 2px solid var(--ink); border-radius: 4px;
+              background: transparent; color: var(--ink); font-size: 16px; font-weight: 700; transition: all .15s cubic-bezier(.4,0,.2,1); }
+  .btn-black-o:hover { background: var(--ink); color: #fff; }
+  .nav-opener { display: none; }
+
+  /* ---------- Buttons (scrapingbee.com: .btn fades to 90%, .btn-black-o fills black) ---------- */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 12px; border-radius: 4px; font-weight: 700; line-height: 1.2; white-space: nowrap; cursor: pointer;
+         transition: background-color .15s cubic-bezier(.4,0,.2,1), color .15s cubic-bezier(.4,0,.2,1), border-color .15s cubic-bezier(.4,0,.2,1); }
+  .btn--dark { background: var(--ink); color: #fff; }
+  .btn--dark:hover { background: rgba(15, 15, 14, .9); }
+  .btn--outline { background: rgba(255, 255, 255, 0.1); border: 2px solid var(--ink); color: var(--ink); }
+  .btn--outline:hover { background: var(--ink); color: #fff; }
+  .btn--sm { padding: 12px 24px; font-size: 16px; }
+  .btn--sm.btn--outline { padding: 10px 22px; }
+  .btn--lg { padding: 16px 32px; font-size: 18px; }
+  .btn--lg.btn--outline { padding: 14px 30px; }
+  .btn__icon { position: relative; width: 20px; height: 20px; flex-shrink: 0; }
+  .btn__icon img { position: absolute; left: 4.17%; top: 4.17%; width: 89.83%; height: 91.66%; }
+
+  /* ---------- Content column ---------- */
+  .wrap { width: 1280px; display: flex; gap: 20px; align-items: center; justify-content: center; }
+  .content { width: 558px; flex-shrink: 0; display: flex; flex-direction: column; gap: 40px; align-items: flex-start; }
+  .headline { display: flex; flex-direction: column; gap: 24px; }
+  .headline h1 { margin: 0; font-size: 52px; line-height: 1.1; letter-spacing: -1px; font-weight: 700; }
+  .headline p { margin: 0; font-size: 18px; line-height: 1.5; color: #000; }
+  .bullets { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .bullets li { display: flex; gap: 20px; align-items: center; font-size: 16px; line-height: 1.2; color: var(--ink-65); }
+  .icon24 { position: relative; width: 24px; height: 24px; flex-shrink: 0; }
+  .icon24 img { position: absolute; display: block; }
+  .icon24--integrate img { left: 8.95%; top: 9.09%; width: 82.16%; height: 81.82%; }
+  .icon24--api img { left: 12.34%; top: 12.34%; width: 75.32%; height: 75.32%; }
+  .icon24--card img { left: 4.17%; top: 4.17%; width: 89.58%; height: 87.93%; }
+  .actions-wrap { display: flex; flex-direction: column; gap: 24px; }
+  .actions { display: flex; gap: 12px; }
+  .trust { display: flex; gap: 12px; align-items: center; }
+  .trust p { margin: 0; font-size: 14px; line-height: 1.4; color: var(--ink-65); white-space: nowrap; }
+  .badge-g2 { position: relative; width: 89px; height: 31px; overflow: hidden; border-radius: 1.1px; filter: drop-shadow(5.5px 3.9px 5.5px rgba(0,0,0,.12)); flex-shrink: 0; }
+  .badge-g2 img { position: absolute; left: -5.5px; top: -7px; width: 111.667px; height: 53.667px; object-fit: cover; }
+  .badge-capterra { position: relative; width: 97.6px; height: 31.948px; flex-shrink: 0; }
+  .badge-capterra img { position: absolute; left: 0.11%; top: 0.77%; width: 99.89%; height: 98.46%; display: block; }
+
+  /* ---------- Key visual stage (722 × 650 design units) ---------- */
+  .kv-frame { position: relative; width: 722px; height: 650px; flex-shrink: 0; }
+  .kv { position: absolute; left: 0; top: 0; width: 722px; height: 650px; overflow: hidden; transform-origin: 0 0; }
+  .kv__circles { position: absolute; left: 127px; top: 52px; width: 529px; height: 529px; }
+
+  /* Browser — Figma strokes sit inside and take no layout space, so they're overlays / inset shadows */
+  .browser { position: absolute; left: 65px; top: 249px; width: 586px; height: 373px; background: var(--ink);
+             border-radius: 14.689px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 16px 16px 0 rgba(0,0,0,.5); }
+  .browser::after { content: ""; position: absolute; inset: 0; border: 5.521px solid #000; border-radius: inherit; pointer-events: none; z-index: 2; }
+  .browser__top { display: flex; gap: 7.273px; align-items: center; padding: 14.545px 19.394px; }
+  .browser__top img { width: 9.469px; height: 9.468px; display: block; }
+  .browser__body { position: relative; flex: 1 0 0; min-height: 1px; background: #fff; display: flex; flex-direction: column; overflow: hidden; }
+  .toolbar { display: flex; align-items: center; justify-content: space-between; padding: 7.328px 23.779px; border-bottom: 1.836px solid #e6e6e6; }
+  .toolbar__pill { width: 51.293px; height: 18.319px; border-radius: 362px; background: rgba(217,217,217,.38); }
+  .toolbar__sq { display: flex; gap: 3.664px; }
+  .toolbar__sq span { width: 21.983px; height: 21.983px; border-radius: 3.664px; background: rgba(217,217,217,.18); }
+  .toolbar__sq span:nth-child(-n+2) { background: rgba(217,217,217,.38); }
+  .page { flex: 1 0 0; min-height: 1px; display: flex; gap: 11.889px; align-items: flex-start; padding: 14.655px 23.779px; overflow: hidden; }
+  .sidebar { width: 114.436px; flex-shrink: 0; display: flex; flex-direction: column; gap: 11.889px; font-family: "Flow Circular", sans-serif; font-size: 11.889px; line-height: 1; }
+  .sidebar span { display: block; overflow: hidden; white-space: nowrap; color: #ededed; }
+  .sidebar span:first-child { color: #a8a8a8; }
+  .grid { flex: 1 0 0; min-width: 1px; display: flex; flex-wrap: wrap; align-content: flex-start; align-items: flex-start; gap: 4.4169px 5.945px; }
+  .card { width: 132.27px; padding: 14.655px; border-radius: 10.991px; overflow: hidden; box-shadow: inset 0 0 0 3.664px rgba(0,0,0,.05);
+          display: flex; flex-direction: column; gap: 11.889px; }
+  .card { height: 110.36px; }   /* every card matches the tallest (two-line title) card */
+  .card__sq { width: 17.834px; height: 17.834px; border-radius: 3.664px; flex-shrink: 0; }
+  .card__txt { display: flex; flex-direction: column; gap: 3.664px; overflow-wrap: break-word; }
+  /* Two lines max, clipped without an ellipsis (Flow Circular draws "…" as dots) */
+  /* Solid greys (the old rgba values flattened on white): Flow Circular glyphs overlap, and translucent text shows the overlaps as dots */
+  .card__title, .card__body { overflow: hidden; font-family: "Flow Circular", sans-serif; }
+  .card__title { font-size: 11.889px; line-height: 1; max-height: 2em; color: #a8a8a8; }
+  .card__body { font-size: 10.991px; line-height: 1.09; max-height: 2.18em; color: #e3e3e3; }
+
+
+  /* Terminal */
+  .terminal { position: absolute; left: 131px; top: 27px; width: 291px; height: 155.75px; padding: 12px 20px; background: var(--ink);
+              border-radius: 12px; box-shadow: inset 0 0 0 4px #000, 10px 10px 0 rgba(0,0,0,.3); font: 400 15px/1.65 "Geist Mono", ui-monospace, monospace; color: #fff; white-space: pre; overflow: hidden; }
+  .terminal .k { color: var(--orange); }
+  .terminal .v { color: var(--bee-yellow); }
+  .terminal .dim { color: rgba(255,255,255,.45); }
+  .terminal .ok { color: var(--teal); }
+  .terminal .warn { color: var(--orange); }
+  .terminal .err { color: #ff5a6e; }
+  .terminal .cursor { display: inline-block; width: 8px; height: 17px; margin-left: 1px; vertical-align: -3px; background: var(--bee-yellow); animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  #terminal { transition: opacity .25s ease; }
+  #terminal.is-clearing { opacity: 0; }
+  .terminal .ln-in { display: inline-block; animation: ln-in .5s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes ln-in { from { opacity: 0; transform: translateY(7px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
+
+
+
+  /* Lottie key visual (bee, scanner, beam, data stream) — generated by lottie/build_kv.py */
+  .kv__lottie { position: absolute; left: 0; top: 0; width: 722px; height: 650px; pointer-events: none; }
+  .kv__lottie svg { display: block; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1320px) {
+    .site-header__inner { padding: 0 32px; }
+    .wrap { width: 100%; flex-direction: column; padding: 0 32px; gap: 48px; }
+    .content { width: 100%; max-width: 558px; }
+    .kv-frame { width: 100%; max-width: 722px; }
+  }
+  @media (max-width: 1099px) {
+    .site-header__inner { padding: 0 20px; }
+    .nav-opener { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 40px; height: 40px; padding: 8px; background: none; border: 0; cursor: pointer; }
+    .nav-opener span { display: block; height: 2px; background: var(--ink); border-radius: 2px; transition: transform .2s, opacity .2s; }
+    .site-header.is-open .nav-opener span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .site-header.is-open .nav-opener span:nth-child(2) { opacity: 0; }
+    .site-header.is-open .nav-opener span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .navbar { display: none; position: absolute; top: calc(100% + 16px); left: 0; right: 0; padding: 20px; background: var(--ink); color: #fff; }
+    .site-header.is-open .navbar { display: block; }
+    .navbar__menu { display: block; }
+    .navbar__menu > li { margin-bottom: 20px; }
+    .hasdrop { margin: 0; }
+    .hasdrop-a { padding: 0; }
+    .hasdrop:hover .hasdrop-a { color: inherit; text-decoration: underline; }
+    .nav-drop, .nav-drop--mega { position: static; display: none; visibility: visible; opacity: 1; width: auto; margin: 12px 0 0; background: transparent; border: 0; box-shadow: none; padding: 0; }
+    .hasdrop:hover .nav-drop, .hasdrop:focus-within .nav-drop { display: block; }
+    .nav-drop__heading, .nav-drop__link, .nav-drop__viewall { color: #fff; }
+    .nav-drop__link:hover { background: rgba(255,255,255,.08); }
+    .nav-drop__desc { display: none; }
+    .navbar__actions { justify-content: flex-start; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.2); }
+    .btn-black-o { border-color: #fff; color: #fff; height: 40px; }
+    .btn-black-o:hover { background: #fff; color: var(--ink); }
+  }
+  @media (max-width: 640px) {
+    .wrap { padding: 0 16px; }
+    .headline h1 { font-size: 38px; }
+    .actions { flex-direction: column; align-self: stretch; }
+    .trust { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+<section class="hero">
+  <img class="hero__diagonal" src="assets/bottom-diagonal.svg" alt="">
+  <div class="hero__inner">
+    <header class="site-header">
+      <div class="site-header__inner">
+        <div class="site-header__logo"><a href="https://www.scrapingbee.com/"><img src="assets/logo.svg" alt="ScrapingBee logo" width="160" height="26"></a></div>
+        <button class="nav-opener" id="navOpener" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+        <nav class="navbar" id="navbar">
+          <ul class="navbar__menu">
+            <li><a class="navbar__link" href="https://www.scrapingbee.com/pricing/">Pricing</a></li>
+            <li><a class="navbar__link" href="https://www.scrapingbee.com/documentation/">Documentation</a></li>
+            <li class="hasdrop nav-item--mega"><a class="hasdrop-a" href="#">Product<svg class="nav-caret" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <ul class="nav-drop nav-drop--mega">
+                <li class="nav-drop__col"><span class="nav-drop__heading">HTML API Features<span class="nav-drop__core">Core</span></span>
+              <a href="https://www.scrapingbee.com/features/ai-web-scraping-api/" class="nav-drop__link"><svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M11.017 2.814a1 1 0 011.966.0l1.051 5.558a2 2 0 001.594 1.594l5.558 1.051a1 1 0 010 1.966l-5.558 1.051a2 2 0 00-1.594 1.594l-1.051 5.558a1 1 0 01-1.966.0l-1.051-5.558a2 2 0 00-1.594-1.594l-5.558-1.051a1 1 0 010-1.966l5.558-1.051a2 2 0 001.594-1.594zM20 2v4m2-2h-4"/><circle cx="4" cy="20" r="2"/></g></svg><span class="nav-drop__txt"><span class="nav-drop__label">AI Data Extraction</span><span class="nav-drop__desc">Extract structured data via AI</span></span></a>
+              <a href="https://www.scrapingbee.com/features/markdown-scraper/" class="nav-drop__link"><svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M6 22a2 2 0 01-2-2V4a2 2 0 012-2h8a2.4 2.4.0 011.704.706l3.588 3.588A2.4 2.4.0 0120 8v12a2 2 0 01-2 2z"/><path d="M14 2v5a1 1 0 001 1h5M10 9H8m8 4H8m8 4H8"/></g></svg><span class="nav-drop__txt"><span class="nav-drop__label">Markdown Scraper</span><span class="nav-drop__desc">Get any page as clean Markdown</span></span></a>
+              <a href="https://www.scrapingbee.com/features/screenshot/" class="nav-drop__link"><svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M13.997 4a2 2 0 011.76 1.05l.486.9A2 2 0 0018.003 7H20a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V9a2 2 0 012-2h1.997a2 2 0 001.759-1.048l.489-.904A2 2 0 0110.004 4z"/><circle cx="12" cy="13" r="3"/></g></svg><span class="nav-drop__txt"><span class="nav-drop__label">Screenshots</span><span class="nav-drop__desc">Capture full-page screenshots via API</span></span></a>
+              <a href="https://www.scrapingbee.com/features/javascript-scenario/" class="nav-drop__link"><svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 3H7A2 2 0 005 5v5a2 2 0 01-2 2 2 2 0 012 2v5c0 1.1.9 2 2 2h1m8 0h1a2 2 0 002-2v-5c0-1.1.9-2 2-2a2 2 0 01-2-2V5a2 2 0 00-2-2h-1"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">JavaScript Scenario</span><span class="nav-drop__desc">Click, scroll and type before scraping</span></span></a>
+              <a href="https://www.scrapingbee.com/features/data-extraction/" class="nav-drop__link"><svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></g></svg><span class="nav-drop__txt"><span class="nav-drop__label">CSS/XPath Data Extraction</span><span class="nav-drop__desc">Target exact elements with selectors</span></span></a>
+                  <a class="nav-drop__viewall" href="https://www.scrapingbee.com/features/">View all<svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7 7 7-7 7"/></svg></a></li>
+                <li class="nav-drop__col"><span class="nav-drop__heading">Developer tools and integrations</span>
+              <a href="https://www.scrapingbee.com/documentation/cli/" class="nav-drop__link"><svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19h8M4 17l6-6-6-6"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">CLI</span><span class="nav-drop__desc">Scrape straight from your terminal</span></span></a>
+              <a href=https://mcp.scrapingbee.com/ class="nav-drop__link"><svg class="nav-drop__icon nav-drop__icon--brand nav-drop__icon--mcp" width="18" height="18" fill="currentColor" viewBox="0 0 256 285"><path d="M184.913 14.498c11.45 11.45 16.119 27.115 14.005 42.002 14.886-2.115 30.551 2.554 42.005 14.008l.578.578c19.332 19.331 19.332 50.674.0 70.005L140.199 242.394a3.3 3.3.0 000 4.665l20.802 20.802c3.866 3.867 3.866 10.135.0 14.002-3.867 3.866-10.136 3.866-14.002.0l-20.8-20.803c-9.022-9.02-9.022-23.647.0-32.668L227.5 127.09c11.6-11.599 11.6-30.404-.005-42.008l-.577-.578c-11.455-11.454-29.937-11.597-41.567-.43l-.438.43-84.59 84.59c-3.866 3.866-10.134 3.866-14 0-3.867-3.867-3.867-10.135.0-14.001l84.589-84.59c11.6-11.6 11.6-30.404.0-42.004-11.598-11.598-30.404-11.598-42.003.0L16.901 140.509c-3.867 3.866-10.135 3.866-14.001.0-3.867-3.866-3.867-10.135.0-14.001L114.908 14.499c19.332-19.332 50.675-19.332 70.005.0m-28.001 28.003c3.866 3.866 3.866 10.134.0 14l-82.84 82.84c-11.6 11.599-11.6 30.404.0 42.004 11.598 11.598 30.404 11.598 42.003.0l82.84-82.84c3.866-3.866 10.134-3.866 14 0 3.867 3.866 3.867 10.135.0 14l-82.84 82.841c-19.33 19.33-50.673 19.33-70.005.0-19.33-19.333-19.33-50.675.0-70.006l82.84-82.84c3.867-3.866 10.135-3.866 14.002.0"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">MCP Server</span><span class="nav-drop__desc">Connect AI assistants to ScrapingBee</span></span></a>
+              <a href="https://www.scrapingbee.com/features/n8n/" class="nav-drop__link"><svg class="nav-drop__icon nav-drop__icon--brand nav-drop__icon--n8n" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M21.474 5.684a2.53 2.53.0 00-2.447 1.895H16.13a2.526 2.526.0 00-2.492 2.11l-.103.624a1.26 1.26.0 01-1.246 1.055h-1.001a2.527 2.527.0 00-4.893.0H4.973a2.527 2.527.0 100 1.264h1.422a2.527 2.527.0 004.894.0h1a1.26 1.26.0 011.247 1.055l.103.623a2.526 2.526.0 002.492 2.111h.37a2.527 2.527.0 100-1.263h-.37a1.26 1.26.0 01-1.246-1.056l-.103-.623A2.52 2.52.0 0013.96 12a2.52 2.52.0 00.82-1.48l.104-.622a1.26 1.26.0 011.246-1.056h2.896a2.527 2.527.0 102.447-3.158m0 1.263a1.263 1.263.0 011.263 1.263 1.263 1.263.0 01-1.263 1.264A1.263 1.263.0 0120.21 8.21a1.263 1.263.0 011.264-1.263m-18.948 3.79A1.263 1.263.0 013.79 12a1.263 1.263.0 01-1.264 1.263A1.263 1.263.0 011.263 12a1.263 1.263.0 011.263-1.263m6.316.0A1.263 1.263.0 0110.105 12a1.263 1.263.0 01-1.263 1.263A1.263 1.263.0 017.58 12a1.263 1.263.0 011.263-1.263m10.106 3.79a1.263 1.263.0 011.263 1.263 1.263 1.263.0 01-1.263 1.263 1.263 1.263.0 01-1.264-1.263 1.263 1.263.0 011.263-1.264"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">n8n</span><span class="nav-drop__desc">Automate scraping in n8n workflows</span></span></a>
+              <a href="https://www.scrapingbee.com/features/make/" class="nav-drop__link"><svg class="nav-drop__icon nav-drop__icon--brand nav-drop__icon--make" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M13.38 3.498c-.27.0-.511.19-.566.465L9.85 18.986a.58.58.0 00.453.678l4.095.826a.58.58.0 00.682-.455l2.963-15.021a.58.58.0 00-.453-.678l-4.096-.826a.6.6.0 00-.113-.012zm-5.876.098a.58.58.0 00-.516.318L.062 17.697a.575.575.0 00.256.774l3.733 1.877a.58.58.0 00.775-.258l6.926-13.781a.577.577.0 00-.256-.776L7.762 3.658a.6.6.0 00-.258-.062m11.74.115a.576.576.0 00-.576.576v15.426c0 .318.258.578.576.578h4.178a.58.58.0 00.578-.578V4.287a.58.58.0 00-.578-.576z"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">Make</span><span class="nav-drop__desc">Add scraping to Make scenarios</span></span></a>
+              <a href="https://www.scrapingbee.com/documentation/cli/" class="nav-drop__link"><svg class="nav-drop__icon nav-drop__icon--brand" width="18" height="18" viewBox="0 0 256 257"><path fill="#d97757" d="m50.228 170.321 50.357-28.257.843-2.463-.843-1.361h-2.462l-8.426-.518-28.775-.778-24.952-1.037-24.175-1.296-6.092-1.297L0 125.796l.583-3.759 5.12-3.434 7.324.648 16.202 1.101 24.304 1.685 17.629 1.037 26.118 2.722h4.148l.583-1.685-1.426-1.037-1.101-1.037-25.147-17.045-27.22-18.017-14.258-10.37-7.713-5.25-3.888-4.925-1.685-10.758 7-7.713 9.397.649 2.398.648 9.527 7.323 20.35 15.75L94.817 91.9l3.889 3.24 1.555-1.102.195-.777-1.75-2.917-14.453-26.118-15.425-26.572-6.87-11.018-1.814-6.61c-.648-2.723-1.102-4.991-1.102-7.778l7.972-10.823L71.42.0l10.63 1.426 4.472 3.888 6.61 15.101 10.694 23.786 16.591 32.34 4.861 9.592 2.592 8.879.973 2.722h1.685v-1.556l1.36-18.211 2.528-22.36 2.463-28.776.843-8.1 4.018-9.722 7.971-5.25 6.222 2.981 5.12 7.324-.713 4.73-3.046 19.768-5.962 30.98-3.889 20.739h2.268l2.593-2.593 10.499-13.934 17.628-22.036 7.778-8.749 9.073-9.657 5.833-4.601h11.018l8.1 12.055-3.628 12.443-11.342 14.388-9.398 12.184-13.48 18.147-8.426 14.518.778 1.166 2.01-.194 30.46-6.481 16.462-2.982 19.637-3.37 8.88 4.148.971 4.213-3.5 8.62-20.998 5.184-24.628 4.926-36.682 8.685-.454.324.519.648 16.526 1.555 7.065.389h17.304l32.21 2.398 8.426 5.574 5.055 6.805-.843 5.184-12.962 6.611-17.498-4.148-40.83-9.721-14-3.5h-1.944v1.167l11.666 11.406 21.387 19.314 26.767 24.887 1.36 6.157-3.434 4.86-3.63-.518-23.526-17.693-9.073-7.972-20.545-17.304h-1.36v1.814l4.73 6.935 25.017 37.59 1.296 11.536-1.814 3.76-6.481 2.268-7.13-1.297-14.647-20.544-15.1-23.138-12.185-20.739-1.49.843-7.194 77.448-3.37 3.953-7.778 2.981-6.48-4.925-3.436-7.972 3.435-15.749 4.148-20.544 3.37-16.333 3.046-20.285 1.815-6.74-.13-.454-1.49.194-15.295 20.999-23.267 31.433-18.406 19.702-4.407 1.75-7.648-3.954.713-7.064 4.277-6.286 25.47-32.405 15.36-20.092 9.917-11.6-.065-1.686h-.583L44.07 198.125l-12.055 1.555-5.185-4.86.648-7.972 2.463-2.593 20.35-13.999z"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">Claude Code</span><span class="nav-drop__desc">Use ScrapingBee inside Claude Code</span></span></a>
+              <a href="https://www.scrapingbee.com/documentation/cli/" class="nav-drop__link"><svg class="nav-drop__icon nav-drop__icon--brand nav-drop__icon--openai" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M22.282 9.821a6 6 0 00-.516-4.91 6.05 6.05.0 00-6.51-2.9A6.065 6.065.0 004.981 4.18 6 6 0 00.983 7.08a6.05 6.05.0 00.743 7.097 5.98 5.98.0 00.51 4.911 6.05 6.05.0 006.515 2.9A6 6 0 0013.26 24a6.06 6.06.0 005.772-4.206 6 6 0 003.997-2.9 6.06 6.06.0 00-.747-7.073M13.26 22.43a4.48 4.48.0 01-2.876-1.04l.141-.081 4.779-2.758a.8.8.0 00.392-.681v-6.737l2.02 1.168a.07.07.0 01.038.052v5.583A4.504 4.504.0 0113.26 22.43M3.6 18.304a4.47 4.47.0 01-.535-3.014l.142.085 4.783 2.759a.77.77.0 00.78.0l5.843-3.369v2.332a.08.08.0 01-.033.062L9.74 19.95A4.5 4.5.0 013.6 18.304M2.34 7.896a4.5 4.5.0 012.366-1.973V11.6a.77.77.0 00.388.677l5.815 3.354-2.02 1.168a.08.08.0 01-.071.0l-4.83-2.786A4.504 4.504.0 012.34 7.872zm16.597 3.855-5.833-3.387L15.119 7.2a.08.08.0 01.071.0l4.83 2.791a4.494 4.494.0 01-.676 8.105v-5.678a.79.79.0 00-.407-.667m2.01-3.023-.141-.085-4.774-2.782a.78.78.0 00-.785.0L9.409 9.23V6.897a.07.07.0 01.028-.061l4.83-2.787a4.5 4.5.0 016.68 4.66zm-12.64 4.135-2.02-1.164a.08.08.0 01-.038-.057V6.075a4.5 4.5.0 017.375-3.453l-.142.08L8.704 5.46a.8.8.0 00-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">Codex</span><span class="nav-drop__desc">Use ScrapingBee inside Codex</span></span></a>
+              <a href="https://www.scrapingbee.com/documentation/cli/" class="nav-drop__link"><svg class="nav-drop__icon nav-drop__icon--brand nav-drop__icon--cursor" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M11.503.131 1.891 5.678a.84.84.0 00-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 00.998.0l9.61-5.55a.84.84.0 00.42-.724V6.404a.84.84.0 00-.42-.726L12.497.131a1.01 1.01.0 00-.996.0M2.657 6.338h18.55c.263.0.43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59.0 00-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">Cursor</span><span class="nav-drop__desc">Scrape without leaving Cursor</span></span></a>
+                  <a class="nav-drop__viewall" href="https://www.scrapingbee.com/integrations/">View all integrations<svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7 7 7-7 7"/></svg></a></li>
+                <li class="nav-drop__col"><span class="nav-drop__heading">Dedicated Scraper APIs</span>
+              <a href="https://www.scrapingbee.com/features/google/" class="nav-drop__link"><svg class="nav-drop__icon nav-drop__icon--brand" width="18" height="18" viewBox="0 0 256 262"><path fill="#4285f4" d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622 38.755 30.023 2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"/><path fill="#34a853" d="M130.55 261.1c35.248.0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055-34.523.0-63.824-22.773-74.269-54.25l-1.531.13-40.298 31.187-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"/><path fill="#fbbc05" d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82.0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644.0 109.517.0 130.55s5.077 40.905 13.925 58.602z"/><path fill="#eb4335" d="M130.55 50.479c24.514.0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798.0 130.55.0 79.49.0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">Google API</span><span class="nav-drop__desc">Fetch search results into JSON</span></span></a>
+              <a href="https://www.scrapingbee.com/documentation/agentic-employee-search/" class="nav-drop__link"><svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M16 3.128a4 4 0 010 7.744M22 21v-2a4 4 0 00-3-3.87"/><circle cx="9" cy="7" r="4"/></g></svg><span class="nav-drop__txt"><span class="nav-drop__label">Employee Search API</span><span class="nav-drop__desc">Turn prompts into employee data</span></span></a>
+              <a href="https://www.scrapingbee.com/features/fast-search/" class="nav-drop__link"><svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.914 4A1.5 1.5.0 0013.44 2.439l-9 9A1.5 1.5.0 005.5 14h4.002a.5.5.0 01.471.666L8.086 20a1.5 1.5.0 002.475 1.56l9-9A1.5 1.5.0 0018.5 10h-3.997a.5.5.0 01-.472-.667z"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">Fast Search API</span><span class="nav-drop__desc">Fetch sub-second web search results</span></span></a>
+              <a href="https://www.scrapingbee.com/features/chatgpt/" class="nav-drop__link"><svg class="nav-drop__icon nav-drop__icon--brand nav-drop__icon--openai" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M22.282 9.821a6 6 0 00-.516-4.91 6.05 6.05.0 00-6.51-2.9A6.065 6.065.0 004.981 4.18 6 6 0 00.983 7.08a6.05 6.05.0 00.743 7.097 5.98 5.98.0 00.51 4.911 6.05 6.05.0 006.515 2.9A6 6 0 0013.26 24a6.06 6.06.0 005.772-4.206 6 6 0 003.997-2.9 6.06 6.06.0 00-.747-7.073M13.26 22.43a4.48 4.48.0 01-2.876-1.04l.141-.081 4.779-2.758a.8.8.0 00.392-.681v-6.737l2.02 1.168a.07.07.0 01.038.052v5.583A4.504 4.504.0 0113.26 22.43M3.6 18.304a4.47 4.47.0 01-.535-3.014l.142.085 4.783 2.759a.77.77.0 00.78.0l5.843-3.369v2.332a.08.08.0 01-.033.062L9.74 19.95A4.5 4.5.0 013.6 18.304M2.34 7.896a4.5 4.5.0 012.366-1.973V11.6a.77.77.0 00.388.677l5.815 3.354-2.02 1.168a.08.08.0 01-.071.0l-4.83-2.786A4.504 4.504.0 012.34 7.872zm16.597 3.855-5.833-3.387L15.119 7.2a.08.08.0 01.071.0l4.83 2.791a4.494 4.494.0 01-.676 8.105v-5.678a.79.79.0 00-.407-.667m2.01-3.023-.141-.085-4.774-2.782a.78.78.0 00-.785.0L9.409 9.23V6.897a.07.07.0 01.028-.061l4.83-2.787a4.5 4.5.0 016.68 4.66zm-12.64 4.135-2.02-1.164a.08.08.0 01-.038-.057V6.075a4.5 4.5.0 017.375-3.453l-.142.08L8.704 5.46a.8.8.0 00-.393.681zm1.097-2.365 2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">ChatGPT API</span><span class="nav-drop__desc">Collect structured ChatGPT responses</span></span></a>
+              <a href="https://www.scrapingbee.com/features/gemini/" class="nav-drop__link"><svg class="nav-drop__icon nav-drop__icon--brand nav-drop__icon--gemini" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49.0-4.68-.93a12.3 12.3.0 01-3.81-2.58 12.3 12.3.0 01-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3.0 01-3.81 2.58Q2.49 12 0 12q2.49.0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">Gemini API</span><span class="nav-drop__desc">Query Gemini for RAG-ready citations</span></span></a>
+              <a href="https://www.scrapingbee.com/features/amazon/" class="nav-drop__link"><svg class="nav-drop__icon nav-drop__icon--brand nav-drop__icon--amazon" width="18" height="18" viewBox="0 0 448 512"><path fill="currentColor" d="M257.2 162.7c-48.7 1.8-169.5 15.5-169.5 117.5.0 109.5 138.3 114 183.5 43.2 6.5 10.2 35.4 37.5 45.3 46.8l56.8-56S341 288.9 341 261.4V114.3C341 89 316.5 32 228.7 32 140.7 32 94 87 94 136.3l73.5 6.8c16.3-49.5 54.2-49.5 54.2-49.5 40.7-.1 35.5 29.8 35.5 69.1m0 86.8c0 80-84.2 68-84.2 17.2.0-47.2 50.5-56.7 84.2-57.8zm136 163.5c-7.7 10-70 67-174.5 67S34.2 408.5 9.7 379c-6.8-7.7 1-11.3 5.5-8.3C88.5 415.2 203 488.5 387.7 401c7.5-3.7 13.3 2 5.5 12m39.8 2.2c-6.5 15.8-16 26.8-21.2 31-5.5 4.5-9.5 2.7-6.5-3.8s19.3-46.5 12.7-55c-6.5-8.3-37-4.3-48-3.2-10.8 1-13 2-14-.3-2.3-5.7 21.7-15.5 37.5-17.5 15.7-1.8 41-.8 46 5.7 3.7 5.1.0 27.1-6.5 43.1"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">Amazon API</span><span class="nav-drop__desc">Scrape product details and reviews</span></span></a>
+              <a href="https://www.scrapingbee.com/features/walmart/" class="nav-drop__link"><svg class="nav-drop__icon nav-drop__icon--brand nav-drop__icon--walmart" width="18" height="18" viewBox="0 0 24 24"><path fill="currentColor" d="m8.233 13.132-4.776 2.217a1.22 1.22.0 00-.134 1.656c.384.655 1.056.968 1.5.706L9.142 14.7a.86.86.0 00.031-1.066.854.854.0 00-.94-.502m7.552.001c-.3-.118-.7.1-.942.505a.87.87.0 00.026 1.06l4.315 3.018c.448.256 1.123-.055 1.507-.711s.309-1.4-.135-1.656zm-3.777 2.138a.856.856.0 00-.906.556l-.466 5.235c0 .518.606.938 1.372.938s1.371-.42 1.371-.938l-.462-5.235a.86.86.0 00-.909-.556m2.835-4.904a.88.88.0 00.942.509l4.776-2.221c.444-.262.51-.995.135-1.654s-1.059-.97-1.507-.714L14.874 9.3a.88.88.0 00-.026 1.07zM4.827 6.289c-.448-.262-1.12.05-1.5.71a1.22 1.22.0 00.134 1.656l4.772 2.215a.854.854.0 00.94-.5.86.86.0 00-.031-1.065zM12.008 2c-.766.0-1.372.424-1.372.943l.472 5.234a.856.856.0 00.9.556.86.86.0 00.909-.556l.462-5.234C13.38 2.424 12.77 2 12.008 2"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">Walmart API</span><span class="nav-drop__desc">Pull store inventory and pricing data</span></span></a>
+              <a href="https://www.scrapingbee.com/features/youtube/" class="nav-drop__link"><svg class="nav-drop__icon nav-drop__icon--brand" width="18" height="18" viewBox="0 0 256 180"><path fill="red" d="M250.346 28.075A32.18 32.18.0 00227.69 5.418C207.824.0 127.87.0 127.87.0S47.912.164 28.046 5.582A32.18 32.18.0 005.39 28.24c-6.009 35.298-8.34 89.084.165 122.97a32.18 32.18.0 0022.656 22.657c19.866 5.418 99.822 5.418 99.822 5.418s79.955.0 99.82-5.418a32.18 32.18.0 0022.657-22.657c6.338-35.348 8.291-89.1-.164-123.134"/><path fill="#fff" d="m102.421 128.06 66.328-38.418-66.328-38.418z"/></svg><span class="nav-drop__txt"><span class="nav-drop__label">YouTube API</span><span class="nav-drop__desc">Grab video data and transcripts</span></span></a>
+                  <a class="nav-drop__viewall" href="https://www.scrapingbee.com/scrapers/">View all<svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7-7 7 7-7 7"/></svg></a></li>
+              </ul></li>
+            <li><a class="navbar__link" href="https://www.scrapingbee.com/faq/">FAQ</a></li>
+            <li><a class="navbar__link" href="https://www.scrapingbee.com/blog/">Blog</a></li>
+            <li class="hasdrop"><a class="hasdrop-a" href="#">Resources<svg class="nav-caret" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <ul class="nav-drop"><li><a href="https://www.scrapingbee.com/tutorials/" class="nav-drop__link"><svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M21.42 10.922a1 1 0 00-.019-1.838L12.83 5.18a2 2 0 00-1.66.0L2.6 9.08a1 1 0 000 1.832l8.57 3.908a2 2 0 001.66.0zM22 10v6"/><path d="M6 12.5V16a6 3 0 0012 0v-3.5"/></g></svg>Tutorials</a></li><li><a href="https://help.scrapingbee.com/en/" target=_blank class="nav-drop__link"><svg class="nav-drop__icon" width="18" height="18" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v16m8.001-2A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5 5 5 0 008 3H4A2 2 0 002 5v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"/></svg>Knowledge Base</a></li></ul></li>
+          </ul>
+          <ul class="navbar__actions">
+            <li><a class="navbar__link" href="https://dashboard.scrapingbee.com/account/login">Login</a></li>
+            <li><a class="btn btn-black-o" href="https://dashboard.scrapingbee.com/account/register">Sign Up</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class="content">
+        <div class="headline">
+          <h1>The Best Web Scraping API to Avoid Getting Blocked</h1>
+          <p>Scrape websites with our web scraping API and get clean HTML, LLM-ready Markdown, or AI-extracted JSON from any page, including JavaScript-heavy and heavily protected sites. ScrapingBee handles anti-bot systems, CAPTCHAs, headless browsers, and rotates 200M+ proxy IPs for you.</p>
+        </div>
+        <ul class="bullets">
+          <li><span class="icon24 icon24--integrate"><img src="assets/icon-integrate.svg" alt=""></span>Easy to integrate</li>
+          <li><span class="icon24 icon24--api"><img src="assets/icon-api.svg" alt=""></span>1,000 free scraper API credits</li>
+          <li><span class="icon24 icon24--card"><img src="assets/icon-card.svg" alt=""></span>No credit card required</li>
+        </ul>
+        <div class="actions-wrap">
+          <div class="actions">
+            <a class="btn btn--lg btn--dark" href="https://dashboard.scrapingbee.com/account/register">Sign up with email</a>
+            <a class="btn btn--lg btn--outline" href="https://dashboard.scrapingbee.com/account/google_login"><span class="btn__icon"><img src="assets/icon-google.svg" alt=""></span>Sign up with Google</a>
+          </div>
+          <div class="trust">
+            <span class="badge-g2"><img src="assets/g2-badge.png" alt="G2 4.8 rating"></span>
+            <span class="badge-capterra"><img src="assets/capterra.svg" alt="Capterra 4.9"></span>
+            <p>based on 100+ reviews.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="kv-frame" id="kvFrame" aria-hidden="true">
+        <div class="kv" id="kv">
+          <img class="kv__circles" src="assets/circles.svg" alt="">
+
+          <div class="browser">
+            <div class="browser__top">
+              <img src="assets/dot-1.svg" alt=""><img src="assets/dot-2.svg" alt=""><img src="assets/dot-3.svg" alt="">
+            </div>
+            <div class="browser__body" id="browserBody">
+              <div class="toolbar">
+                <div class="toolbar__pill"></div>
+                <div class="toolbar__sq"><span></span><span></span><span></span><span></span><span></span></div>
+              </div>
+              <div class="page">
+                <div class="sidebar">
+                  <span>asdqwa</span><span>dwqqwfwef asdfa</span><span>sdwdq qwdq</span><span>sdqwdas asd</span><span>sda wqdq</span><span>sdasda asdasd</span>
+                </div>
+                <div class="grid">
+                  <div class="card"><div class="card__sq" style="background:#1cd2b4"></div><div class="card__txt"><div class="card__title">asas asdkl 9201</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
+                  <div class="card"><div class="card__sq" style="background:#ff53b2"></div><div class="card__txt"><div class="card__title">asadklasd</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
+                  <div class="card"><div class="card__sq" style="background:#fd7906"></div><div class="card__txt"><div class="card__title">DAO Proposal asd asd</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
+                  <div class="card"><div class="card__sq" style="background:#fc2542"></div><div class="card__txt"><div class="card__title">Solanaasd asd as Hackathon</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
+                  <div class="card"><div class="card__sq" style="background:#fabd24"></div><div class="card__txt"><div class="card__title">Veltaris Laun asd ch asd</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
+                  <div class="card"><div class="card__sq" style="background:#0086c9"></div><div class="card__txt"><div class="card__title">New Grasd asigori Dealss</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
+                  <div class="card"><div class="card__sq" style="background:#557964"></div><div class="card__txt"><div class="card__title">asas asasjhdl lkajs dkl 9201</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
+                  <div class="card"><div class="card__sq" style="background:#0086c9"></div><div class="card__txt"><div class="card__title">asas asasjhdl lkajs dkl 9201</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
+                  <div class="card"><div class="card__sq" style="background:#05dbe2"></div><div class="card__txt"><div class="card__title">asas asasjhdl lkajs dkl 9201</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="terminal" id="terminalBox"><div id="terminal"></div></div>
+
+          <div class="kv__lottie" id="kvLottie"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<script src="kv-animation.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const kv = $("kv"), kvFrame = $("kvFrame");
+  const term = $("terminal"), termBox = $("terminalBox");
+  // Prototype always plays. For production, gate autoplay on prefers-reduced-motion (or add ?still to the URL here).
+  const still = new URLSearchParams(location.search).has("still");
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  // ---- Mobile menu
+  const header = document.querySelector(".site-header"), opener = $("navOpener");
+  opener.addEventListener("click", () => opener.setAttribute("aria-expanded", header.classList.toggle("is-open")));
+
+  // ---- Stage scaling: the KV is authored at 722×650 and scaled to fit narrower layouts.
+  function fit() {
+    const parent = kvFrame.parentElement;
+    const avail = parent.clientWidth - (getComputedStyle(parent).flexDirection === "column" ? 64 : 0);
+    const scale = Math.min(1, avail / 722);
+    kv.style.transform = scale < 1 ? `scale(${scale})` : "";
+    kvFrame.style.height = 650 * scale + "px";
+    kvFrame.style.width = 722 * scale + "px";
+  }
+  addEventListener("resize", fit); fit();
+
+  // ---- Terminal. A line is a list of [text, className] segments.
+  // Commands are typed character by character; results glide in line by line.
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const seg = (t, c) => (c ? `<span class="${c}">${esc(t)}</span>` : esc(t));
+  const lineLen = (ln) => ln.reduce((n, [t]) => n + t.length, 0);
+  const cursor = '<span class="cursor"></span>';
+  let termLines = [], typeToken = 0;
+  function render(lines, { typed = Infinity, revealFrom = Infinity } = {}) {
+    let left = typed;
+    const out = [];
+    for (let i = 0; i < lines.length && (left > 0 || i === 0); i++) {
+      let html = "";
+      for (const [t, c] of lines[i]) { if (left <= 0) break; const part = t.slice(0, left); left -= part.length; html += seg(part, c); }
+      left -= 1;
+      out.push(i >= revealFrom ? `<span class="ln-in" style="animation-delay:${(i - revealFrom) * 80}ms">${html}</span>` : html);
+    }
+    term.innerHTML = out.join("\n") + cursor;
+    term.classList.remove("is-clearing");
+  }
+  async function type(lines, { append = false, speed = 16 } = {}) {
+    const token = ++typeToken;
+    if (!append) { term.classList.add("is-clearing"); await sleep(250); if (token !== typeToken) return; }
+    const base = append ? termLines.reduce((n, l) => n + lineLen(l) + 1, 0) : 0;
+    termLines = append ? termLines.concat(lines) : lines;
+    const total = termLines.reduce((n, l) => n + lineLen(l) + 1, 0);
+    for (let t = base; t <= total; t += 1) {
+      if (token !== typeToken) return;
+      render(termLines, { typed: t }); await sleep(speed);
+    }
+    render(termLines);
+  }
+  async function reveal(lines, { append = false } = {}) {
+    const token = ++typeToken;
+    if (!append) { term.classList.add("is-clearing"); await sleep(250); if (token !== typeToken) return; }
+    const from = append ? termLines.length : 0;
+    termLines = append ? termLines.concat(lines) : lines;
+    render(termLines, { revealFrom: from });
+  }
+
+  // ---- Lottie key visual. The animation is the master clock: the terminal and chip follow the event list
+  // generated alongside it (lottie/build_kv.py), fired as the playhead crosses each event.
+  const EVENTS = window.KV_EVENTS, FPS = window.KV_ANIMATION.fr;
+  function run(e) {
+    if (e.a === "reset") { ++typeToken; termLines = e.lines; render(termLines); }
+    else if (e.a === "type") type(e.lines, { append: e.append, speed: e.speed });
+    else if (e.a === "reveal") reveal(e.lines, { append: e.append });
+  }
+  run(EVENTS[0]);
+  const anim = lottie.loadAnimation({
+    container: $("kvLottie"), renderer: "svg", loop: true, autoplay: false,
+    animationData: window.KV_ANIMATION, rendererSettings: { preserveAspectRatio: "xMidYMid meet" },
+  });
+  let prev = 0;
+  anim.addEventListener("enterFrame", ({ currentTime }) => {
+    const now = currentTime / FPS;
+    if (prev === Infinity) return;
+    if (now < prev) { EVENTS.filter((e) => e.t > prev).forEach(run); prev = -1; }
+    EVENTS.filter((e) => e.t > prev && e.t <= now).forEach(run);
+    prev = now;
+  });
+  // ?t=12.5 freezes the timeline at that second (handy for reviewing a moment); text appears instantly.
+  const seek = parseFloat(new URLSearchParams(location.search).get("t"));
+  function freezeAt(t) {
+    prev = Infinity;
+    anim.goToAndStop(t * FPS, true);
+    for (const e of EVENTS.filter((e) => e.t <= t)) {
+      if (e.a === "type" || e.a === "reveal") { ++typeToken; termLines = e.append ? termLines.concat(e.lines) : e.lines; render(termLines); }
+      else run(e);
+    }
+  }
+  // Card heights depend on the web fonts, but never wait long for them.
+  Promise.race([document.fonts.ready, sleep(1500)]).then(() =>
+    !isNaN(seek) ? freezeAt(seek) : still ? anim.goToAndStop(0, true) : anim.play());
+  window.kvAnimation = anim;
+})();
+</script>
+</body>
+</html>

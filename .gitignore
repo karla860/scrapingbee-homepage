@@ -1,0 +1,4 @@
+.DS_Store
+__pycache__/
+# Design reference screenshot used while building, not part of the site
+figma-ref.png
