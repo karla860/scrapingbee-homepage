@@ -6,7 +6,7 @@
 <title>ScrapingBee Hero</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Geist+Mono:wght@400;700&family=Flow+Circular&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bee-yellow: #ffc91f;
@@ -113,60 +113,10 @@
   .badge-capterra { position: relative; width: 97.6px; height: 31.948px; flex-shrink: 0; }
   .badge-capterra img { position: absolute; left: 0.11%; top: 0.77%; width: 99.89%; height: 98.46%; display: block; }
 
-  /* ---------- Key visual stage (722 × 650 design units) ---------- */
+  /* ---------- Key visual: one Lottie (lottie/build_kv.py → kv-animation.json), authored at 722 × 650 ---------- */
   .kv-frame { position: relative; width: 722px; height: 650px; flex-shrink: 0; }
   .kv { position: absolute; left: 0; top: 0; width: 722px; height: 650px; overflow: hidden; transform-origin: 0 0; }
-  .kv__circles { position: absolute; left: 127px; top: 52px; width: 529px; height: 529px; }
-
-  /* Browser — Figma strokes sit inside and take no layout space, so they're overlays / inset shadows */
-  .browser { position: absolute; left: 65px; top: 249px; width: 586px; height: 373px; background: var(--ink);
-             border-radius: 14.689px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 16px 16px 0 rgba(0,0,0,.5); }
-  .browser::after { content: ""; position: absolute; inset: 0; border: 5.521px solid #000; border-radius: inherit; pointer-events: none; z-index: 2; }
-  .browser__top { display: flex; gap: 7.273px; align-items: center; padding: 14.545px 19.394px; }
-  .browser__top img { width: 9.469px; height: 9.468px; display: block; }
-  .browser__body { position: relative; flex: 1 0 0; min-height: 1px; background: #fff; display: flex; flex-direction: column; overflow: hidden; }
-  .toolbar { display: flex; align-items: center; justify-content: space-between; padding: 7.328px 23.779px; border-bottom: 1.836px solid #e6e6e6; }
-  .toolbar__pill { width: 51.293px; height: 18.319px; border-radius: 362px; background: rgba(217,217,217,.38); }
-  .toolbar__sq { display: flex; gap: 3.664px; }
-  .toolbar__sq span { width: 21.983px; height: 21.983px; border-radius: 3.664px; background: rgba(217,217,217,.18); }
-  .toolbar__sq span:nth-child(-n+2) { background: rgba(217,217,217,.38); }
-  .page { flex: 1 0 0; min-height: 1px; display: flex; gap: 11.889px; align-items: flex-start; padding: 14.655px 23.779px; overflow: hidden; }
-  .sidebar { width: 114.436px; flex-shrink: 0; display: flex; flex-direction: column; gap: 11.889px; font-family: "Flow Circular", sans-serif; font-size: 11.889px; line-height: 1; }
-  .sidebar span { display: block; overflow: hidden; white-space: nowrap; color: #ededed; }
-  .sidebar span:first-child { color: #a8a8a8; }
-  .grid { flex: 1 0 0; min-width: 1px; display: flex; flex-wrap: wrap; align-content: flex-start; align-items: flex-start; gap: 4.4169px 5.945px; }
-  .card { width: 132.27px; padding: 14.655px; border-radius: 10.991px; overflow: hidden; box-shadow: inset 0 0 0 3.664px rgba(0,0,0,.05);
-          display: flex; flex-direction: column; gap: 11.889px; }
-  .card { height: 110.36px; }   /* every card matches the tallest (two-line title) card */
-  .card__sq { width: 17.834px; height: 17.834px; border-radius: 3.664px; flex-shrink: 0; }
-  .card__txt { display: flex; flex-direction: column; gap: 3.664px; overflow-wrap: break-word; }
-  /* Two lines max, clipped without an ellipsis (Flow Circular draws "…" as dots) */
-  /* Solid greys (the old rgba values flattened on white): Flow Circular glyphs overlap, and translucent text shows the overlaps as dots */
-  .card__title, .card__body { overflow: hidden; font-family: "Flow Circular", sans-serif; }
-  .card__title { font-size: 11.889px; line-height: 1; max-height: 2em; color: #a8a8a8; }
-  .card__body { font-size: 10.991px; line-height: 1.09; max-height: 2.18em; color: #e3e3e3; }
-
-
-  /* Terminal */
-  .terminal { position: absolute; left: 131px; top: 27px; width: 291px; height: 155.75px; padding: 12px 20px; background: var(--ink);
-              border-radius: 12px; box-shadow: inset 0 0 0 4px #000, 10px 10px 0 rgba(0,0,0,.3); font: 400 15px/1.65 "Geist Mono", ui-monospace, monospace; color: #fff; white-space: pre; overflow: hidden; }
-  .terminal .k { color: var(--orange); }
-  .terminal .v { color: var(--bee-yellow); }
-  .terminal .dim { color: rgba(255,255,255,.45); }
-  .terminal .ok { color: var(--teal); }
-  .terminal .warn { color: var(--orange); }
-  .terminal .err { color: #ff5a6e; }
-  .terminal .cursor { display: inline-block; width: 8px; height: 17px; margin-left: 1px; vertical-align: -3px; background: var(--bee-yellow); animation: blink 1s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
-  #terminal { transition: opacity .25s ease; }
-  #terminal.is-clearing { opacity: 0; }
-  .terminal .ln-in { display: inline-block; animation: ln-in .5s cubic-bezier(.2,.7,.2,1) both; }
-  @keyframes ln-in { from { opacity: 0; transform: translateY(7px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
-
-
-
-  /* Lottie key visual (bee, scanner, beam, data stream) — generated by lottie/build_kv.py */
-  .kv__lottie { position: absolute; left: 0; top: 0; width: 722px; height: 650px; pointer-events: none; }
+  .kv__lottie { position: absolute; inset: 0; pointer-events: none; }
   .kv__lottie svg { display: block; }
 
   /* ---------- Responsive ---------- */
@@ -287,39 +237,6 @@
 
       <div class="kv-frame" id="kvFrame" aria-hidden="true">
         <div class="kv" id="kv">
-          <img class="kv__circles" src="assets/circles.svg" alt="">
-
-          <div class="browser">
-            <div class="browser__top">
-              <img src="assets/dot-1.svg" alt=""><img src="assets/dot-2.svg" alt=""><img src="assets/dot-3.svg" alt="">
-            </div>
-            <div class="browser__body" id="browserBody">
-              <div class="toolbar">
-                <div class="toolbar__pill"></div>
-                <div class="toolbar__sq"><span></span><span></span><span></span><span></span><span></span></div>
-              </div>
-              <div class="page">
-                <div class="sidebar">
-                  <span>asdqwa</span><span>dwqqwfwef asdfa</span><span>sdwdq qwdq</span><span>sdqwdas asd</span><span>sda wqdq</span><span>sdasda asdasd</span>
-                </div>
-                <div class="grid">
-                  <div class="card"><div class="card__sq" style="background:#1cd2b4"></div><div class="card__txt"><div class="card__title">asas asdkl 9201</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
-                  <div class="card"><div class="card__sq" style="background:#ff53b2"></div><div class="card__txt"><div class="card__title">asadklasd</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
-                  <div class="card"><div class="card__sq" style="background:#fd7906"></div><div class="card__txt"><div class="card__title">DAO Proposal asd asd</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
-                  <div class="card"><div class="card__sq" style="background:#fc2542"></div><div class="card__txt"><div class="card__title">Solanaasd asd as Hackathon</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
-                  <div class="card"><div class="card__sq" style="background:#fabd24"></div><div class="card__txt"><div class="card__title">Veltaris Laun asd ch asd</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
-                  <div class="card"><div class="card__sq" style="background:#0086c9"></div><div class="card__txt"><div class="card__title">New Grasd asigori Dealss</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
-                  <div class="card"><div class="card__sq" style="background:#557964"></div><div class="card__txt"><div class="card__title">asas asasjhdl lkajs dkl 9201</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
-                  <div class="card"><div class="card__sq" style="background:#0086c9"></div><div class="card__txt"><div class="card__title">asas asasjhdl lkajs dkl 9201</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
-                  <div class="card"><div class="card__sq" style="background:#05dbe2"></div><div class="card__txt"><div class="card__title">asas asasjhdl lkajs dkl 9201</div><div class="card__body">asas asdkl 920kalsjdlkj lkajsdlkjajslkdj lkajsdojiwqjidhqpw dhpjqpjwpoqjp aps1</div></div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="terminal" id="terminalBox"><div id="terminal"></div></div>
-
           <div class="kv__lottie" id="kvLottie"></div>
         </div>
       </div>
@@ -333,10 +250,9 @@
 (() => {
   const $ = (id) => document.getElementById(id);
   const kv = $("kv"), kvFrame = $("kvFrame");
-  const term = $("terminal"), termBox = $("terminalBox");
+  const params = new URLSearchParams(location.search);
   // Prototype always plays. For production, gate autoplay on prefers-reduced-motion (or add ?still to the URL here).
-  const still = new URLSearchParams(location.search).has("still");
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const still = params.has("still"), seek = parseFloat(params.get("t"));
 
   // ---- Mobile menu
   const header = document.querySelector(".site-header"), opener = $("navOpener");
@@ -353,79 +269,15 @@
   }
   addEventListener("resize", fit); fit();
 
-  // ---- Terminal. A line is a list of [text, className] segments.
-  // Commands are typed character by character; results glide in line by line.
-  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  const seg = (t, c) => (c ? `<span class="${c}">${esc(t)}</span>` : esc(t));
-  const lineLen = (ln) => ln.reduce((n, [t]) => n + t.length, 0);
-  const cursor = '<span class="cursor"></span>';
-  let termLines = [], typeToken = 0;
-  function render(lines, { typed = Infinity, revealFrom = Infinity } = {}) {
-    let left = typed;
-    const out = [];
-    for (let i = 0; i < lines.length && (left > 0 || i === 0); i++) {
-      let html = "";
-      for (const [t, c] of lines[i]) { if (left <= 0) break; const part = t.slice(0, left); left -= part.length; html += seg(part, c); }
-      left -= 1;
-      out.push(i >= revealFrom ? `<span class="ln-in" style="animation-delay:${(i - revealFrom) * 80}ms">${html}</span>` : html);
-    }
-    term.innerHTML = out.join("\n") + cursor;
-    term.classList.remove("is-clearing");
-  }
-  async function type(lines, { append = false, speed = 16 } = {}) {
-    const token = ++typeToken;
-    if (!append) { term.classList.add("is-clearing"); await sleep(250); if (token !== typeToken) return; }
-    const base = append ? termLines.reduce((n, l) => n + lineLen(l) + 1, 0) : 0;
-    termLines = append ? termLines.concat(lines) : lines;
-    const total = termLines.reduce((n, l) => n + lineLen(l) + 1, 0);
-    for (let t = base; t <= total; t += 1) {
-      if (token !== typeToken) return;
-      render(termLines, { typed: t }); await sleep(speed);
-    }
-    render(termLines);
-  }
-  async function reveal(lines, { append = false } = {}) {
-    const token = ++typeToken;
-    if (!append) { term.classList.add("is-clearing"); await sleep(250); if (token !== typeToken) return; }
-    const from = append ? termLines.length : 0;
-    termLines = append ? termLines.concat(lines) : lines;
-    render(termLines, { revealFrom: from });
-  }
-
-  // ---- Lottie key visual. The animation is the master clock: the terminal and chip follow the event list
-  // generated alongside it (lottie/build_kv.py), fired as the playhead crosses each event.
-  const EVENTS = window.KV_EVENTS, FPS = window.KV_ANIMATION.fr;
-  function run(e) {
-    if (e.a === "reset") { ++typeToken; termLines = e.lines; render(termLines); }
-    else if (e.a === "type") type(e.lines, { append: e.append, speed: e.speed });
-    else if (e.a === "reveal") reveal(e.lines, { append: e.append });
-  }
-  run(EVENTS[0]);
+  // ---- Key visual: the whole scene is the Lottie (browser, cards, terminal, scanner, beam, data, bee).
   const anim = lottie.loadAnimation({
     container: $("kvLottie"), renderer: "svg", loop: true, autoplay: false,
     animationData: window.KV_ANIMATION, rendererSettings: { preserveAspectRatio: "xMidYMid meet" },
   });
-  let prev = 0;
-  anim.addEventListener("enterFrame", ({ currentTime }) => {
-    const now = currentTime / FPS;
-    if (prev === Infinity) return;
-    if (now < prev) { EVENTS.filter((e) => e.t > prev).forEach(run); prev = -1; }
-    EVENTS.filter((e) => e.t > prev && e.t <= now).forEach(run);
-    prev = now;
-  });
-  // ?t=12.5 freezes the timeline at that second (handy for reviewing a moment); text appears instantly.
-  const seek = parseFloat(new URLSearchParams(location.search).get("t"));
-  function freezeAt(t) {
-    prev = Infinity;
-    anim.goToAndStop(t * FPS, true);
-    for (const e of EVENTS.filter((e) => e.t <= t)) {
-      if (e.a === "type" || e.a === "reveal") { ++typeToken; termLines = e.append ? termLines.concat(e.lines) : e.lines; render(termLines); }
-      else run(e);
-    }
-  }
-  // Card heights depend on the web fonts, but never wait long for them.
-  Promise.race([document.fonts.ready, sleep(1500)]).then(() =>
-    !isNaN(seek) ? freezeAt(seek) : still ? anim.goToAndStop(0, true) : anim.play());
+  const FPS = window.KV_ANIMATION.fr;
+  // ?t=12.5 freezes the animation at that second (handy for reviewing a moment); ?still shows the resting frame.
+  anim.addEventListener("DOMLoaded", () =>
+    !isNaN(seek) ? anim.goToAndStop(seek * FPS, true) : still ? anim.goToAndStop(0, true) : anim.play());
   window.kvAnimation = anim;
 })();
 </script>

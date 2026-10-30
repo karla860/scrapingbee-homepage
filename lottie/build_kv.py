@@ -1,16 +1,18 @@
 """
 Builds the hero key-visual animation as a Lottie file with python-lottie.
 
-The Lottie holds everything that moves in the key visual: the bee (Figma "Mascot / Bee" vectors, imported
-from SVG), its moods, eyelid blinks and wing flutter, the scanner, the dashed beam and the data stream.
-The browser, terminal text and progress chip stay as live HTML underneath; they follow the same timeline
-through the event list written next to the animation (and mirrored as Lottie markers).
+The whole key visual is one self-contained Lottie: the background circles, the browser with its cards, the
+terminal (typed commands, JSON results, blinking cursor), the scanner, the dashed beam, the data stream and the
+bee (Figma "Mascot / Bee" vectors imported from SVG, with its moods, eyelid blinks and wing flutter).
+Text is converted to vector outlines from the bundled fonts (lottie/fonts, SIL OFL), so no fonts are needed to play it.
+Static layout comes from kv-layout.json, measured from the original HTML build of the scene.
 
 Run:  python build_kv.py         ->  ../kv-animation.json  +  ../kv-animation.js
 """
 import json, math, random, re
 from pathlib import Path
 from lottie.parsers.svg import parse_svg_file
+from glyphs import Font
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -617,19 +619,224 @@ def bit_layers():
     return out
 
 
+# ---------------------------------------------------------------- static scene (circles, browser, cards)
+LAYOUT = json.loads((HERE / "kv-layout.json").read_text())
+MONO = Font(HERE / "fonts" / "GeistMono-Regular.ttf")
+FLOW = Font(HERE / "fonts" / "FlowCircular-Regular.ttf")
+
+
+def css_hex(c):
+    r, g, b = [int(v) for v in re.findall(r"\d+", c)[:3]]
+    return f"#{r:02X}{g:02X}{b:02X}"
+
+
+def rrect_path(x, y, w, h, r):
+    k = 0.5523 * r
+    pts = [(x + r, y), (x + w - r, y), (x + w, y + r), (x + w, y + h - r), (x + w - r, y + h), (x + r, y + h), (x, y + h - r), (x, y + r)]
+    i = [[-k, 0], [0, 0], [0, -k], [0, 0], [k, 0], [0, 0], [0, k], [0, 0]]
+    o = [[0, 0], [k, 0], [0, 0], [0, k], [0, 0], [-k, 0], [0, 0], [0, -k]]
+    return path(pts, True, i=i, o=o)
+
+
+def mask(pt):
+    return {"inv": False, "mode": "a", "pt": pt if "a" in pt else static(pt), "o": static(100), "x": static(0), "nm": "clip"}
+
+
+def outline_group(beziers, color, nm="text"):
+    return group([{"ty": "sh", "ks": static(b)} for b in beziers] + [fill(color)], nm)
+
+
+def ellipse(cx, cy, w, h):
+    return {"ty": "el", "d": 1, "p": static([cx, cy]), "s": static([w, h])}
+
+
+def scene_layers():
+    """Returns (above_scanner, below_scanner) layer lists, top-most first."""
+    bx, by, bw, bh = LAYOUT["browser"]
+    border = layer("browser · border", 4, ks(), shapes=[group([rect((bw - 5.521, bh - 5.521), (bx + bw / 2, by + bh / 2), r=14.689 - 2.76),
+                                                                stroke("#000000", 5.521)], "border")])
+    # page content, clipped to the browser body
+    shapes = []
+    for t in LAYOUT["texts"]:
+        sz, bez = t["size"], []
+        for line in t["lines"]:
+            for ch, x, top in line:
+                bez += FLOW.contours(ch, sz, x, top + FLOW.asc / FLOW.upm * sz)
+        shapes.append(outline_group(bez, css_hex(t["color"]), t["cls"] or "sidebar"))
+    for x, y, w, h, col in LAYOUT["cardSq"]:
+        shapes.append(group([rect((w, h), (x + w / 2, y + h / 2), r=3.664), fill(css_hex(col))], "thumb"))
+    for x, y, w, h in LAYOUT["cards"]:
+        shapes.append(group([rect((w - 3.664, h - 3.664), (x + w / 2, y + h / 2), r=10.991 - 1.832), stroke("#F2F2F2", 3.664)], "card"))
+    px, py, pw, ph = LAYOUT["body"]
+    page = layer("browser · page", 4, ks(), shapes=shapes, hasMask=True, masksProperties=[mask(path(
+        [(px, py), (px + pw, py), (px + pw, py + ph), (px, py + ph)], True))])
+    # body, toolbar and frame
+    tx, ty, tw, th = LAYOUT["toolbar"]
+    chrome = [group([{"ty": "sh", "ks": static(path([(px, ty + th - .918), (px + pw, ty + th - .918)]))}, stroke("#E6E6E6", 1.836, cap=1)], "toolbar line")]
+    x, y, w, h = LAYOUT["pill"]
+    chrome.append(group([rect((w, h), (x + w / 2, y + h / 2), r=h / 2), fill("#F1F1F1")], "pill"))
+    for n, (x, y, w, h) in enumerate(LAYOUT["squares"]):
+        chrome.append(group([rect((w, h), (x + w / 2, y + h / 2), r=3.664), fill("#F1F1F1" if n < 2 else "#F8F8F8")], "square"))
+    chrome.append(group([rect((pw, ph + 20), (px + pw / 2, py + (ph + 20) / 2)), fill("#FFFFFF")], "body"))
+    body = layer("browser · body", 4, ks(), shapes=chrome, hasMask=True, masksProperties=[mask(rrect_path(bx, by, bw, bh, 14.689))])
+    frame = [group([ellipse(x + w / 2, y + h / 2, w, h) for x, y, w, h in LAYOUT["dots"]] + [fill("#FFFFFF")], "dots"),
+             group([rect((bw, bh), (bx + bw / 2, by + bh / 2), r=14.689), fill("#0F0F0E")], "frame"),
+             group([rect((bw, bh), (bx + bw / 2 + 16, by + bh / 2 + 16), r=14.689), fill("#000000", 50)], "shadow")]
+    browser = layer("browser · frame", 4, ks(), shapes=frame)
+    cx, cy, cw, _ = LAYOUT["circles"]
+    circles = layer("circles", 4, ks(), shapes=[
+        group([ellipse(cx + cw / 2, cy + cw / 2, 395, 395), fill("#FF9D28", 30)], "inner"),
+        group([ellipse(cx + cw / 2, cy + cw / 2, 529, 529), fill("#FF9D28", 18)], "outer")])
+    return [border], [page, body, browser, circles]
+
+
+# ---------------------------------------------------------------- terminal (typed commands, results, cursor)
+TX, TY, LH, ADV, TSIZE = 151, 39, 24.75, 9, 15
+BASE = (LH - (MONO.asc + MONO.desc) * TSIZE / MONO.upm) / 2 + MONO.asc * TSIZE / MONO.upm   # baseline within a line box
+LINE_W = 260
+TCOL = {None: "#FFFFFF", "k": "#FF9D28", "v": "#FFC91F", "dim": "#7B7B7A", "ok": "#1CD2B4", "warn": "#FF9D28", "err": "#FF5A6E"}
+ASSETS = []
+_line_ids = {}
+
+
+def special_glyph(ch, x, b, col):
+    """✓ ✕ ↻ are not in Geist Mono (the browser used a fallback font) — drawn as strokes in the same 9px cell."""
+    if ch == "✓":
+        segs = [[(x + 1.2, b - 5.2), (x + 3.6, b - 2.6), (x + 8, b - 9.4)]]
+    elif ch == "✕":
+        segs = [[(x + 1.8, b - 9.2), (x + 7.2, b - 3.8)], [(x + 7.2, b - 9.2), (x + 1.8, b - 3.8)]]
+    else:  # ↻
+        cx, cy, r = x + 4.5, b - 5.8, 3.4
+        arc = [(cx + r * math.cos(math.radians(a)), cy + r * math.sin(math.radians(a))) for a in range(-80, 221, 25)]
+        ex, ey = arc[0]
+        segs = [arc, [(ex - 2.4, ey - 1.6), (ex, ey), (ex - 1.2, ey + 2.4)]]
+    items = [{"ty": "sh", "ks": static(path(s))} for s in segs]
+    return group(items + [stroke(col, 1.6, cap=2)], ch)
+
+
+def line_asset(segs):
+    key = json.dumps(segs, ensure_ascii=False)
+    if key in _line_ids:
+        return _line_ids[key]
+    x, groups = 0.0, []
+    for seg in segs:
+        text, col = seg[0], TCOL[seg[1] if len(seg) > 1 else None]
+        bez = []
+        for ch in text:
+            if ch in "✓✕↻":
+                groups.append(special_glyph(ch, x, BASE, col))
+            elif ch != " ":
+                bez += MONO.contours(ch, TSIZE, x, BASE)
+            x += ADV
+        if bez:
+            groups.append(outline_group(bez, col))
+    aid = f"line_{len(_line_ids)}"
+    _line_ids[key] = aid
+    ASSETS.append({"id": aid, "nm": "".join(s[0] for s in segs), "w": LINE_W, "h": 26,
+                   "layers": [{"ddd": 0, "ind": 1, "ty": 4, "nm": "glyphs", "sr": 1, "ks": ks(), "ao": 0, "ip": 0, "op": 10 ** 6,
+                               "st": 0, "bm": 0, "shapes": groups}]})
+    return aid
+
+
+def terminal_layers(op_frames):
+    out, screen = [], []
+    cur_keys, cur_fade = [(0.0, 0, 0)], Track(100)
+
+    def instance(segs, idx, opacity, pos=None, mask_keys=None):
+        k = ks(p=(TX, TY + idx * LH), o=opacity)
+        if pos:
+            k["p"] = {"a": 1, "k": [{**kk, "s": [kk["s"][0] + TX, kk["s"][1] + TY + idx * LH, 0]} for kk in pos.lottie(z=True)["k"]]}
+        d = {"ddd": 0, "ind": 0, "ty": 0, "nm": "".join(s[0] for s in segs) or "(blank)", "refId": line_asset(segs), "sr": 1, "ks": k,
+             "ao": 0, "w": LINE_W, "h": 26, "ip": 0, "op": op_frames, "st": 0, "bm": 0}
+        if mask_keys:
+            d["hasMask"] = True
+            d["masksProperties"] = [mask({"a": 1, "k": mask_keys})]
+        return d
+
+    def cursor_at(t, idx, nchars):
+        cur_keys.append((t, TX + nchars * ADV + 1, TY + idx * LH + BASE - 14))
+
+    def fade(t):
+        for ln in screen:
+            ln["op"].to(t, .25, 0, EASE_IO)
+        cur_fade.seq(t, [(.25, 0, EASE_IO), (.26, 100, HOLD)])
+        screen.clear()
+
+    pending = []
+    for e in events:
+        t, a = e["t"], e["a"]
+        if a == "reset":
+            for i, segs in enumerate(e["lines"]):
+                tk = Track(100)
+                pending.append((segs, i, tk, None, None)); screen.append({"op": tk})
+            cursor_at(0.0, len(e["lines"]) - 1, sum(len(s[0]) for s in e["lines"][-1]))
+            cur_keys.pop(0)
+        elif a == "type":
+            t0 = t if e["append"] else t + .25
+            if not e["append"]:
+                fade(t)
+            sp, g, idx0 = e["speed"] / 1000, 0, len(screen)
+            for n_line, segs in enumerate(e["lines"]):
+                idx, n = idx0 + n_line, sum(len(s[0]) for s in segs)
+                tk = Track(0); tk.to(t0, .001, 100, HOLD)
+                mk = [{"t": round(t0 * FPS, 2), "s": [path([(-1, -2), (.01, -2), (.01, 28), (-1, 28)], True)], "h": 1}]
+                if n_line > 0 or not e["append"]:
+                    cursor_at(t0 + g * sp, idx, 0)
+                for c in range(n):
+                    tc = t0 + (g + c + 1) * sp
+                    w = (c + 1) * ADV
+                    mk.append({"t": round(tc * FPS, 2), "s": [path([(-1, -2), (w, -2), (w, 28), (-1, 28)], True)], "h": 1})
+                    cursor_at(tc, idx, c + 1)
+                mk.append({"t": round((t0 + (g + n + 1) * sp) * FPS, 2) + 1,
+                           "s": [path([(-1, -2), (LINE_W, -2), (LINE_W, 28), (-1, 28)], True)]})
+                pending.append((segs, idx, tk, None, mk)); screen.append({"op": tk})
+                g += n + 1
+        elif a == "reveal":
+            t0 = t if e["append"] else t + .25
+            if not e["append"]:
+                fade(t)
+            idx0 = len(screen)
+            for n_line, segs in enumerate(e["lines"]):
+                td = t0 + n_line * .08
+                tk = Track(0); tk.to(td, .5, 100, (.2, .7, .2, 1))
+                pos = Track([0, 7]); pos.to(td, .5, [0, 0], (.2, .7, .2, 1))
+                pending.append((segs, idx0 + n_line, tk, pos, None)); screen.append({"op": tk})
+            last = e["lines"][-1]
+            cursor_at(t0, idx0 + len(e["lines"]) - 1, sum(len(s[0]) for s in last))
+    for segs, idx, tk, pos, mk in pending:
+        out.append(instance(segs, idx, tk.lottie(), pos, mk))
+    # cursor: position steps, layer fade with the screen, group opacity blinks (visible the first half of every second)
+    cur_keys.sort()
+    p = {"a": 1, "k": [{"t": round(tt * FPS, 2), "s": [x, y, 0], "h": 1} for tt, x, y in cur_keys]}
+    blink = {"a": 1, "k": [{"t": round(s * .5 * FPS, 2), "s": [0 if s % 2 else 100], "h": 1} for s in range(int(END * 2) + 2)]}
+    cursor = layer("terminal · cursor", 4, ks(p=p, o=cur_fade.lottie()), shapes=[
+        {"ty": "gr", "nm": "block", "it": [rect((8, 17), (4, 8.5)), fill("#FFC91F"),
+                                           {**tr(), "o": blink}]}])
+    out.reverse()                       # later lines on top
+    x, y, w, h = LAYOUT["terminal"]
+    box = layer("terminal · box", 4, ks(), shapes=[
+        group([rect((w - 4, h - 4), (x + w / 2, y + h / 2), r=10), stroke("#000000", 4)], "border"),
+        group([rect((w, h), (x + w / 2, y + h / 2), r=12), fill("#0F0F0E")], "fill"),
+        group([rect((w, h), (x + w / 2 + 10, y + h / 2 + 10), r=12), fill("#000000", 30)], "shadow")])
+    return [cursor] + out + [box]
+
+
 # ---------------------------------------------------------------- assemble
-bee_layers = build_bee()
-LAYERS = bit_layers() + bee_layers + [beam_layer(), sweep_layer(), scanner_layer()]
+events.sort(key=lambda e: e["t"])
 OP = round(END * FPS)
-for l in LAYERS:
+bee_layers = build_bee()
+above, below = scene_layers()
+LAYERS = (bit_layers() + bee_layers + terminal_layers(OP) + [beam_layer()] + above
+          + [sweep_layer(), scanner_layer()] + below)
+for n, l in enumerate(LAYERS):
     l["op"] = OP
+    if l["ty"] == 0:                    # precomp instances have no parent links, so their index can be reassigned freely
+        l["ind"] = 10000 + n
 anim = {"v": "5.12.2", "fr": FPS, "ip": 0, "op": OP, "w": W, "h": H, "nm": "ScrapingBee hero · key visual", "ddd": 0,
-        "assets": [], "layers": LAYERS, "markers": markers,
+        "assets": ASSETS, "layers": LAYERS, "markers": markers,
         "meta": {"g": "python-lottie build_kv.py"}}
 data = json.dumps(anim, separators=(",", ":"), ensure_ascii=False)
-events.sort(key=lambda e: e["t"])
 (ROOT / "kv-animation.json").write_text(data)
-(ROOT / "kv-animation.js").write_text(
-    "// Generated by lottie/build_kv.py — do not edit by hand.\n"
-    f"window.KV_ANIMATION = {data};\nwindow.KV_EVENTS = {json.dumps(events, ensure_ascii=False)};\n")
-print(f"duration {END:.2f}s · {OP} frames · {len(LAYERS)} layers · {len(data) / 1024:.0f} KB · {len(events)} events · {len(blinks)} blinks")
+(ROOT / "kv-animation.js").write_text("// Generated by lottie/build_kv.py — do not edit by hand.\n"
+                                      f"window.KV_ANIMATION = {data};\n")
+print(f"duration {END:.2f}s · {OP} frames · {len(LAYERS)} layers · {len(ASSETS)} line assets · {len(data) / 1024:.0f} KB · {len(blinks)} blinks")
